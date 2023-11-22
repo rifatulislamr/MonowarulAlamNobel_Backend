@@ -5,20 +5,17 @@ require("dotenv").config();
 const { MongoClient, ObjectId } = require("mongodb");
 const port = process.env.PORT || 3000;
 
-// Middleware
+// Middlewares
 app.use(cors());
 app.use(express.json());
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@codersot.pqlnaow.mongodb.net`;
+const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@codersot.pqlnaow.mongodb.net`;
 
 async function run() {
-  const client = new MongoClient(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  const client = new MongoClient(url);
 
   try {
-    // Connect the client to the server
+    //  connecting with db
     await client.connect();
 
     const db = client.db("nobelDb");
@@ -43,7 +40,6 @@ async function run() {
     // Define a route to get all articles
     app.get("/all-articles", async (req, res) => {
       try {
-        // Fetch all articles from the MongoDB collection
         const allArticlesData = await allArticlesCollection.find().toArray();
         res.json(allArticlesData);
       } catch (err) {
@@ -57,7 +53,6 @@ async function run() {
       const postId = req.params.id;
 
       try {
-        // Fetch post details from the MongoDB collection based on the unique id
         const postDetails = await recentCollection.findOne({
           _id: new ObjectId(postId),
         });
@@ -78,7 +73,6 @@ async function run() {
       const postId = req.params.id;
 
       try {
-        // Fetch post details from the MongoDB collection based on the unique id
         const postDetails = await allArticlesCollection.findOne({
           _id: new ObjectId(postId),
         });
@@ -97,7 +91,6 @@ async function run() {
     // Define a route to get all politics news
     app.get("/political-news", async (req, res) => {
       try {
-        // Fetch all articles from the MongoDB collection
         const allNewsData = await politicsCollection.find().toArray();
         res.json(allNewsData);
       } catch (err) {
@@ -111,7 +104,6 @@ async function run() {
       const postId = req.params.id;
 
       try {
-        // Fetch post details from the MongoDB collection based on the unique id
         const postDetails = await politicsCollection.findOne({
           _id: new ObjectId(postId),
         });
@@ -130,7 +122,6 @@ async function run() {
     // Define a route to get all personal news
     app.get("/personal-news", async (req, res) => {
       try {
-        // Fetch all articles from the MongoDB collection
         const allNewsData = await personalCollection.find().toArray();
         res.json(allNewsData);
       } catch (err) {
@@ -143,7 +134,6 @@ async function run() {
     app.get("/personal-news/:id", async (req, res) => {
       const postId = req.params.id;
       try {
-        // Fetch post details from the MongoDB collection based on the unique id
         const postDetails = await personalCollection.findOne({
           _id: new ObjectId(postId),
         });
@@ -162,7 +152,6 @@ async function run() {
     // Define a route to get all social news
     app.get("/social-news", async (req, res) => {
       try {
-        // Fetch all articles from the MongoDB collection
         const allNewsData = await socialNewsCollection.find().toArray();
         res.json(allNewsData);
       } catch (err) {
@@ -175,7 +164,6 @@ async function run() {
     app.get("/social-news/:id", async (req, res) => {
       const postId = req.params.id;
       try {
-        // Fetch post details from the MongoDB collection based on the unique id
         const postDetails = await socialNewsCollection.findOne({
           _id: new ObjectId(postId),
         });
@@ -193,10 +181,10 @@ async function run() {
 
     // Testing connection
     app.get("/", (req, res) => {
-      res.send("Nobel Bhai server is coming...");
+      res.send("Nobel Bro server jinda hai...");
     });
 
-    // Set the server to listen on port 3000
+    // Listening on PORT 3000
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
       console.log(`Server is running on http://localhost:${PORT}`);
@@ -206,4 +194,4 @@ async function run() {
   }
 }
 
-run().catch(console.dir);
+run().catch(console.log("error happened!"));
