@@ -24,6 +24,7 @@ async function run() {
     const politicsCollection = db.collection("politicalNews");
     const personalCollection = db.collection("personalNews");
     const socialNewsCollection = db.collection("socialNews");
+    const videosCollection = db.collection("videos");
 
     // Get all recent news
     app.get("/recent-news", async (req, res) => {
@@ -179,77 +180,83 @@ async function run() {
       }
     });
 
+    // Post request for recent news
+    app.post("/recent-news/addData", async (req, res) => {
+      const { title, subtitle, image } = req.body;
+      console.log("API hit from frontend from recent news");
 
-// Post request for recent news
-app.post('/recent-news/addData', async (req, res) => {
-  const { title, subtitle, image } = req.body;
-  console.log('API hit from frontend from recent news');
+      try {
+        // Create a new document with the submitted data
+        const newData = { title, subtitle, image };
 
-  try {
-    // Create a new document with the submitted data
-    const newData = { title, subtitle, image };
+        // Get the current documents in the collection
+        const currentData = await recentCollection.find().toArray();
 
-    // Get the current documents in the collection
-    const currentData = await recentCollection.find().toArray();
+        // Insert the new document at the beginning of the array
+        currentData.unshift(newData);
 
-    // Insert the new document at the beginning of the array
-    currentData.unshift(newData);
+        // Update the entire collection with the modified array
+        await recentCollection.deleteMany({}); // Delete all documents in the collection
+        await recentCollection.insertMany(currentData); // Insert the modified array
 
-    // Update the entire collection with the modified array
-    await recentCollection.deleteMany({}); // Delete all documents in the collection
-    await recentCollection.insertMany(currentData); // Insert the modified array
+        // Send a success response
+        res.status(200).json({ message: "Data added successfully" });
+      } catch (error) {
+        // Log the error for debugging
+        console.error("Error adding data:", error);
 
-    // Send a success response
-    res.status(200).json({ message: 'Data added successfully' });
-  } catch (error) {
-    // Log the error for debugging
-    console.error('Error adding data:', error);
+        // Send an error response
+        res.status(500).json({ message: "Internal server error" });
+      }
+    });
 
-    // Send an error response
-    res.status(500).json({ message: 'Internal server error' });
-  }
-});
+    // Post request for personal news
+    app.post("/personal-news/addData", async (req, res) => {
+      const { title, subtitle, image } = req.body;
+      console.log("API hit from frontend from personal news");
 
+      try {
+        // Create a new document with the submitted data
+        const newData = { title, subtitle, image };
 
-// Post request for personal news
-app.post('/personal-news/addData', async (req, res) => {
-  const { title, subtitle, image } = req.body;
-  console.log('API hit from frontend from personal news');
+        // Get the current documents in the collection
+        const currentData = await personalCollection.find().toArray();
 
-  try {
-    // Create a new document with the submitted data
-    const newData = { title, subtitle, image };
+        // Insert the new document at the beginning of the array
+        currentData.unshift(newData);
 
-    // Get the current documents in the collection
-    const currentData = await personalCollection.find().toArray();
+        // Update the entire collection with the modified array
+        await personalCollection.deleteMany({}); // Delete all documents in the collection
+        await personalCollection.insertMany(currentData); // Insert the modified array
 
-    // Insert the new document at the beginning of the array
-    currentData.unshift(newData);
+        // Send a success response
+        res.status(200).json({ message: "Data added successfully" });
+      } catch (error) {
+        // Log the error for debugging
+        console.error("Error adding data:", error);
 
-    // Update the entire collection with the modified array
-    await personalCollection.deleteMany({}); // Delete all documents in the collection
-    await personalCollection.insertMany(currentData); // Insert the modified array
+        // Send an error response
+        res.status(500).json({ message: "Internal server error" });
+      }
+    });
 
-    // Send a success response
-    res.status(200).json({ message: 'Data added successfully' });
-  } catch (error) {
-    // Log the error for debugging
-    console.error('Error adding data:', error);
-
-    // Send an error response
-    res.status(500).json({ message: 'Internal server error' });
-  }
-});
-
-
+    // get all videos
+    app.get("/all-videos", async (req, res) => {
+      try {
+        console.log("hitted server");
+        // Fetch recent news from the MongoDB collection
+        const videos = await videosCollection.find().toArray();
+        res.json(videos);
+      } catch (err) {
+        console.error("Error fetching videos:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
+    });
 
     // Testing connection
     app.get("/", (req, res) => {
       res.send("Nobel Bro server jinda hai...");
     });
-
-
-
 
     // Listening on PORT 3000
     const PORT = process.env.PORT || 3000;
