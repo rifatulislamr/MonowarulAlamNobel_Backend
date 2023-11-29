@@ -179,10 +179,77 @@ async function run() {
       }
     });
 
+
+// Post request for recent news
+app.post('/recent-news/addData', async (req, res) => {
+  const { title, subtitle, image } = req.body;
+  console.log('API hit from frontend from recent news');
+
+  try {
+    // Create a new document with the submitted data
+    const newData = { title, subtitle, image };
+
+    // Get the current documents in the collection
+    const currentData = await recentCollection.find().toArray();
+
+    // Insert the new document at the beginning of the array
+    currentData.unshift(newData);
+
+    // Update the entire collection with the modified array
+    await recentCollection.deleteMany({}); // Delete all documents in the collection
+    await recentCollection.insertMany(currentData); // Insert the modified array
+
+    // Send a success response
+    res.status(200).json({ message: 'Data added successfully' });
+  } catch (error) {
+    // Log the error for debugging
+    console.error('Error adding data:', error);
+
+    // Send an error response
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
+// Post request for personal news
+app.post('/personal-news/addData', async (req, res) => {
+  const { title, subtitle, image } = req.body;
+  console.log('API hit from frontend from personal news');
+
+  try {
+    // Create a new document with the submitted data
+    const newData = { title, subtitle, image };
+
+    // Get the current documents in the collection
+    const currentData = await personalCollection.find().toArray();
+
+    // Insert the new document at the beginning of the array
+    currentData.unshift(newData);
+
+    // Update the entire collection with the modified array
+    await personalCollection.deleteMany({}); // Delete all documents in the collection
+    await personalCollection.insertMany(currentData); // Insert the modified array
+
+    // Send a success response
+    res.status(200).json({ message: 'Data added successfully' });
+  } catch (error) {
+    // Log the error for debugging
+    console.error('Error adding data:', error);
+
+    // Send an error response
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
+
     // Testing connection
     app.get("/", (req, res) => {
       res.send("Nobel Bro server jinda hai...");
     });
+
+
+
 
     // Listening on PORT 3000
     const PORT = process.env.PORT || 3000;
