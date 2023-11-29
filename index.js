@@ -243,10 +243,8 @@ async function run() {
     // get all videos
     app.get("/all-videos", async (req, res) => {
       try {
-        console.log("hitted server");
-        // Fetch recent news from the MongoDB collection
-        const videos = await videosCollection.find().toArray();
-        res.json(videos);
+        const videosData = await videosCollection.find().toArray();
+        res.json(videosData);
       } catch (err) {
         console.error("Error fetching videos:", err);
         res.status(500).json({ error: "Internal Server Error" });
