@@ -180,6 +180,8 @@ async function run() {
       }
     });
 
+
+
     // Post request for recent news
     app.post("/recent-news/addData", async (req, res) => {
       const { title, subtitle, image } = req.body;
@@ -210,6 +212,8 @@ async function run() {
       }
     });
 
+
+
     // Post request for personal news
     app.post("/personal-news/addData", async (req, res) => {
       const { title, subtitle, image } = req.body;
@@ -239,6 +243,124 @@ async function run() {
         res.status(500).json({ message: "Internal server error" });
       }
     });
+
+
+
+    // Post request for social news
+    app.post("/social-news/addData", async (req, res) => {
+      const { title, subtitle, image } = req.body;
+      console.log("API hit from frontend from personal news");
+
+      try {
+        // Create a new document with the submitted data
+        const newData = { title, subtitle, image };
+
+        // Get the current documents in the collection
+        const currentData = await socialNewsCollection.find().toArray();
+
+        // Insert the new document at the beginning of the array
+        currentData.unshift(newData);
+
+        // Update the entire collection with the modified array
+        await socialNewsCollection.deleteMany({}); // Delete all documents in the collection
+        await socialNewsCollection.insertMany(currentData); // Insert the modified array
+
+        // Send a success response
+        res.status(200).json({ message: "Data added successfully" });
+      } catch (error) {
+        // Log the error for debugging
+        console.error("Error adding data:", error);
+
+        // Send an error response
+        res.status(500).json({ message: "Internal server error" });
+      }
+    });
+
+
+    // Post request for political news
+    app.post("/political-news/addData", async (req, res) => {
+      const { title, subtitle, image } = req.body;
+      console.log("API hit from frontend from personal news");
+
+      try {
+        // Create a new document with the submitted data
+        const newData = { title, subtitle, image };
+
+        // Get the current documents in the collection
+        const currentData = await politicsCollection.find().toArray();
+
+        // Insert the new document at the beginning of the array
+        currentData.unshift(newData);
+
+        // Update the entire collection with the modified array
+        await politicsCollection.deleteMany({}); // Delete all documents in the collection
+        await politicsCollection.insertMany(currentData); // Insert the modified array
+
+        // Send a success response
+        res.status(200).json({ message: "Data added successfully" });
+      } catch (error) {
+        // Log the error for debugging
+        console.error("Error adding data:", error);
+
+        // Send an error response
+        res.status(500).json({ message: "Internal server error" });
+      }
+    });
+
+
+
+// Post request for all videos
+app.post('/all-videos/addData', async (req, res) => {
+  try {
+    // Extract data from the request body
+    const { title, link } = req.body;
+    console.log("API hit from frontend for videos");
+
+    // Create a new video document with the submitted data
+    const newVideo = { title, link };
+
+    // Get the current videos in the collection
+    const currentVideos = await videosCollection.find().toArray();
+
+    // Insert the new video document at the beginning of the array
+    currentVideos.unshift(newVideo);
+
+    // Update the entire collection with the modified array
+    await videosCollection.deleteMany({}); // Delete all videos in the collection
+    await videosCollection.insertMany(currentVideos); // Insert the modified array
+
+    // Respond with success message
+    res.status(201).json({ message: 'Video uploaded successfully!' });
+  } catch (error) {
+    console.error("Error uploading video:", error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
+
+    // //post all videos
+    
+    // app.post('/all-videos/addData', async (req, res) => {
+    //   try {
+    //     // Extract data from the request body
+    //     const { title, link } = req.body;
+    //     console.log("API hit from frontend from videos");
+  
+    //     // Insert the video document into the collection
+    //     await videosCollection.insertOne({ title, link });
+  
+    //     // Respond with success message
+    //     res.status(201).json({ message: 'Video uploaded successfully!' });
+    //   } catch (error) {
+    //     console.error(error);
+    //     res.status(500).json({ error: 'Internal Server Error' });
+    //   }
+    // });
+
+
+
 
     // get all videos
     app.get("/all-videos", async (req, res) => {
