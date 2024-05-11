@@ -362,7 +362,7 @@ app.post('/all-videos/addData', async (req, res) => {
 
 
 
-    // get all videos
+    // get all videos here
     app.get("/all-videos", async (req, res) => {
       try {
         const videosData = await videosCollection.find().toArray();
